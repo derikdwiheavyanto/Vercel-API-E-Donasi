@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     const { error, value } = authValidation.loginValidation.validate(body);
 
     if (error) {
-      return NextResponse.json({ message: error.message }, { status: 400 });
+      return errorHelper(error);
     }
 
     const checkLogin = await service.loginService(
@@ -42,5 +42,3 @@ export async function POST(request: NextRequest) {
     return errorHelper(error);
   }
 }
-
-

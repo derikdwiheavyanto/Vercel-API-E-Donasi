@@ -15,6 +15,10 @@ class AppResponse<T> {
   static error(message: string, status: number = 500) {
     return { status, message };
   }
+
+  static validationError(message: string) {
+    return { status: 400, message: message };
+  }
 }
 
 export default AppResponse;

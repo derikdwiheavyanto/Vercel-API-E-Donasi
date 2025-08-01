@@ -1,4 +1,4 @@
-import UserModel from "@/app/(Model)/UserModel";
+import { UserRequest } from "@/app/(Model)/(Request)/UserRequest";
 import serviceAuth from "@/app/(Service)/(Auth)/service_auth";
 import { registerValidation } from "@/app/(Validation)/auth_validation";
 import AppError from "@/lib/helper/app_error";
@@ -19,14 +19,18 @@ export async function POST(request: NextRequest) {
     const { error, value } = registerValidation.validate(body);
 
     if (error) {
-      return NextResponse.json({ message: error.message }, { status: 400 });
+      return errorHelper(error);
     }
 
-    const usermodel = new UserModel(value.name, value.username, value.password);
+    const usermodel = new UserRequest();
+    usermodel.name = value.name;
+    usermodel.username = value.username;
+    usermodel.password = value.password;
+
     const result = await serviceAuth.registerService(usermodel);
 
-    if (!result){
-        throw new AppError("User already exists", 400);
+    if (!result) {
+      throw new AppError("User already exists", 400);
     }
 
     return NextResponse.json(

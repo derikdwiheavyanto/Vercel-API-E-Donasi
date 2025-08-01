@@ -1,5 +1,5 @@
 import { prisma } from "@/app/(DB)/database";
-import UserModel from "@/app/(Model)/UserModel";
+import { UserRequest } from "@/app/(Model)/(Request)/UserRequest";
 
 const findUser = async (username: string) => {
   const user = await prisma.user.findUnique({
@@ -15,7 +15,7 @@ const findUser = async (username: string) => {
   return user;
 };
 
-const registerUser = async (user: UserModel) => {
+const registerUser = async (user: UserRequest) => {
   const result = await prisma.user.create({
     data: {
       name: user.name,

@@ -1,4 +1,4 @@
-import UserModel from "@/app/(Model)/UserModel";
+import { UserRequest } from "@/app/(Model)/(Request)/UserRequest";
 import repositoryAuth from "@/app/(Repository)/(Auth)/repository_auth";
 import AppError from "@/lib/helper/app_error";
 import bcrypt from "bcrypt";
@@ -25,13 +25,12 @@ const loginService = async (username: string, password: string) => {
 
   const token = jsonwebtoken.sign(payload, process.env.JWT_SECRET as string, {
     expiresIn: "1d",
-    algorithm: "HS256",
   });
 
   return { token, payload };
 };
 
-const registerService = async (user: UserModel) => {
+const registerService = async (user: UserRequest) => {
   const checkUser = await repositoryAuth.findUser(user.username);
 
   if (checkUser) {
