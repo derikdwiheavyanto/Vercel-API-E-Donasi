@@ -8,8 +8,15 @@ class AppResponse<T> {
     this.data = data;
   }
 
-  static success<T>(message: string = "Success", data: T): AppResponse<T> {
-    return new AppResponse(200, message, data);
+  static success<T>(
+    message: string = "Success",
+    data: T | null = null
+  ): AppResponse<T> {
+    if (data) {
+      return new AppResponse(200, message, data);
+    } else {
+      return { status: 200, message: message } as AppResponse<T>;
+    }
   }
 
   static error(message: string, status: number = 500) {

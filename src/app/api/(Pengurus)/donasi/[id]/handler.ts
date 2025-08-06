@@ -7,27 +7,33 @@ import { errorHelper } from "@/lib/helper/error_helper";
 import { verifyToken } from "@/lib/helper/verify_token";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function DELETE(request: NextRequest,{ params }: { params: Promise<{ id: string }> }) {
-    try {
-        const user = verifyToken(request);
+export async function DELETEHandler(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const user = verifyToken(request);
 
-        const { id } = await params;
+    const { id } = await params;
 
-        if (!id) {
-            throw new AppError("id not found", 404);
-        }
-
-        const data = await serviceDonasi.deleteDonasi(id, user.id);
-
-        return NextResponse.json(AppResponse.success("delete donasi success", data), {
-            status: 200,
-        });
-    } catch (error) {
-        return errorHelper(error);
+    if (!id) {
+      throw new AppError("id not found", 404);
     }
+
+    const data = await serviceDonasi.deleteDonasi(id, user.id);
+
+    return NextResponse.json(
+      AppResponse.success("delete donasi success", data),
+      {
+        status: 200,
+      }
+    );
+  } catch (error) {
+    return errorHelper(error);
+  }
 }
 
-export async function PATCH(
+export async function PATCHHandler(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {

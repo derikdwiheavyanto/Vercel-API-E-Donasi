@@ -1,4 +1,5 @@
 import { UserRequest } from "@/app/(Model)/(Request)/UserRequest";
+import { Role } from "@/app/(Model)/(Response)/UserResponse";
 import repositoryAuth from "@/app/(Repository)/(Auth)/repository_auth";
 import AppError from "@/lib/helper/app_error";
 import bcrypt from "bcrypt";
@@ -11,6 +12,14 @@ const loginService = async (username: string, password: string) => {
     return null;
   }
 
+  if (user.deleted_at) {
+    throw new AppError("User not found", 404);
+  }
+
+  if (!user.active) {
+    throw new AppError("User not active", 401);
+  }
+
   const isPasswordValid = await bcrypt.compare(password, user.password);
 
   if (!isPasswordValid) {
@@ -20,6 +29,10 @@ const loginService = async (username: string, password: string) => {
   const payload = {
     id: user.id,
     name: user.name,
+    role: new Role({
+      id: user.role?.id ?? 2,
+      name: user.role?.name ?? "pengurus",
+    }),
     username: user.username,
   };
 

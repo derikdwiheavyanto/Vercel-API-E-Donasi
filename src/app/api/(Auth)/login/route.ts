@@ -34,6 +34,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       AppResponse.success("Login success", {
         username: value.username,
+        role: checkLogin.payload.role,
         token: checkLogin.token,
       }),
       { status: 200 }

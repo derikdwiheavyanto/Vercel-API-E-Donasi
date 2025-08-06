@@ -6,7 +6,7 @@ import { errorHelper } from "@/lib/helper/error_helper";
 import { verifyToken } from "@/lib/helper/verify_token";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: NextRequest) {
+export async function GETHandler(request: NextRequest) {
   try {
     const user = verifyToken(request);
 
@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-export async function POST(request: NextRequest) {
+export async function POSTHandler(request: NextRequest) {
   try {
     const user = verifyToken(request);
 
