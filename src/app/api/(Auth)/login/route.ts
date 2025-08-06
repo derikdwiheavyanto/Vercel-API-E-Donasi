@@ -33,7 +33,9 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(
       AppResponse.success("Login success", {
-        username: value.username,
+        id: checkLogin.payload.id,
+        name: checkLogin.payload.name,
+        username: checkLogin.payload.username,
         role: checkLogin.payload.role,
         token: checkLogin.token,
       }),

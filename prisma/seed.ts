@@ -24,12 +24,14 @@ async function main() {
         username: "admin",
         password: bcrypt.hashSync("admin", 10),
         id_role: 1,
+        active: true,
       },
       {
         name: "pengurus",
         username: "pengurus",
         password: bcrypt.hashSync("pengurus", 10),
         id_role: 2,
+        active: true,
       },
     ],
   });
