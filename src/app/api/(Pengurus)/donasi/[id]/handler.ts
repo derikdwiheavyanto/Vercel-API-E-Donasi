@@ -67,7 +67,7 @@ export async function PATCHHandler(
 
     let storage = null;
 
-    if (file) {
+    if (file && file.size > 0) {
       storage = await supabase.storage
         .from("uploads") // nama bucket
         .upload(fileName, file, {
