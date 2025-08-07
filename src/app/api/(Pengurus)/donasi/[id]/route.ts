@@ -1,6 +1,5 @@
 import { WithRole } from "@/lib/Auth/RoleFilter";
-import { DELETEHandler, PATCHHandler } from "./handler";
-import { GETHandler } from "../handler";
+import { DELETEHandler, PATCHHandler, GETHandler } from "./handler";
 
 const ROLE = ["pengurus"];
 
