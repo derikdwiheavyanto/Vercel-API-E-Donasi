@@ -63,7 +63,7 @@ export async function POSTHandler(request: NextRequest) {
       });
 
     if (uploadError) {
-      console.error("Upload error", error);
+      console.error("Upload error", uploadError);
       return errorHelper(error);
     }
 
