@@ -7,6 +7,7 @@ import { verifyToken } from "@/lib/helper/verify_token";
 import { NextRequest, NextResponse } from "next/server";
 import path from "path";
 import fs from "fs";
+import { supabase } from "@/lib/supabase";
 
 export async function GETHandler(request: NextRequest) {
   try {
@@ -39,6 +40,12 @@ export async function POSTHandler(request: NextRequest) {
     const deskripsi = formData.get("deskripsi");
     const file = formData.get("gambar") as File | null;
 
+    if (!file) {
+      return NextResponse.json(AppResponse.error("gambar is required", 400), {
+        status: 400,
+      });
+    }
+
     const body = {
       nominal,
       deskripsi,
@@ -47,33 +54,27 @@ export async function POSTHandler(request: NextRequest) {
     const { error, value } = createDonasiValidation.validate(body);
     if (error) return errorHelper(error);
 
-    let fileName = null;
+    const fileName = `${Date.now()}-${file?.name}`;
 
-    if (file) {
-      const arrayBuffer = await file.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
+    const { data: uploadData, error: uploadError } = await supabase.storage
+      .from("uploads") // nama bucket
+      .upload(fileName, file, {
+        contentType: file.type,
+      });
 
-      // Buat nama file unik (misal dengan timestamp)
-      const timestamp = Date.now();
-      fileName = `${timestamp}-${file.name}`;
-
-      const uploadDir = path.join(process.cwd(), "public", "uploads");
-
-      // Pastikan folder uploads ada
-      if (!fs.existsSync(uploadDir)) {
-        fs.mkdirSync(uploadDir, { recursive: true });
-      }
-
-      const filePath = path.join(uploadDir, fileName);
-      fs.writeFileSync(filePath, buffer);
+    if (uploadError) {
+      console.error("Upload error", error);
+      return errorHelper(error);
     }
+
+    const imageUrl = `${process.env.SUPABASE_NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/uploads/${fileName}`;
 
     const donasi = new DonasiRequest();
     donasi.id_user = user.id;
     donasi.nominal = value.nominal;
     donasi.deskripsi = value.deskripsi;
     if (fileName) {
-      donasi.gambar = `${process.env.NEXT_PUBLIC_URL}/uploads/${fileName}`;
+      donasi.gambar = imageUrl;
     }
 
     const data = await serviceDonasi.createDonasi(donasi);
