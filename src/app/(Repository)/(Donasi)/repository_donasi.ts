@@ -41,6 +41,7 @@ const createDonasi = async (donasi: DonasiRequest) => {
       tanggal_donasi: donasi.tanggal_donasi,
       nominal: donasi.nominal,
       deskripsi: donasi.deskripsi,
+      gambar: donasi.gambar,
     },
   });
 };
