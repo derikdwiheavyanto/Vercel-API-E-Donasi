@@ -23,6 +23,7 @@ const getAllDonasiByUser = async (
         donasi.id_user,
         donasi.tanggal_donasi,
         donasi.nominal,
+        donasi.gambar,
         donasi.deskripsi,
         donasi.created_at,
         donasi.updated_at
@@ -55,6 +56,10 @@ const editDonasi = async (id: string, donasiRequest: DonasiRequest) => {
 
   if (donasiRequest.deskripsi) {
     data.deskripsi = donasiRequest.deskripsi;
+  }
+
+  if (donasiRequest.gambar) {
+    data.gambar = donasiRequest.gambar;
   }
 
   return await prisma.donasi.update({

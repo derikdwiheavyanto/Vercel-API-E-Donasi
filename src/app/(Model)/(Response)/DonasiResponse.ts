@@ -4,6 +4,7 @@ class DonasiResponse {
   tanggal_donasi: Date;
   nominal: number;
   deskripsi: string;
+  gambar: string | null;
   created_at: Date;
   updated_at: Date;
   id_user: string;
@@ -14,6 +15,7 @@ class DonasiResponse {
     id_user: string,
     tanggal_donasi: Date,
     nominal: number,
+    gambar: string | null,
     deskripsi: string,
     created_at: Date,
     updated_at: Date
@@ -23,6 +25,7 @@ class DonasiResponse {
     this.id_user = id_user;
     this.tanggal_donasi = tanggal_donasi;
     this.nominal = nominal;
+    this.gambar = gambar;
     this.deskripsi = deskripsi;
     this.created_at = created_at;
     this.updated_at = updated_at;
