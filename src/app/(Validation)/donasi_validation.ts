@@ -14,9 +14,6 @@ export const createDonasiValidation = Joi.object({
     "string.max": "Deskripsi maksimal 200 karakter",
     "any.required": "Deskripsi wajib diisi",
   }),
-  gambar: Joi.string().required().messages({
-    "any.required": "Gambar wajib diisi",
-  }),
 });
 
 export const editDonasiValidation = Joi.object({
