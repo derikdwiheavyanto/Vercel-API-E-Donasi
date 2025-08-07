@@ -5,6 +5,7 @@ import AppError from "@/lib/helper/app_error";
 import AppResponse from "@/lib/helper/app_response";
 import { errorHelper } from "@/lib/helper/error_helper";
 import { verifyToken } from "@/lib/helper/verify_token";
+import { supabase } from "@/lib/supabase";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function DELETEHandler(
@@ -48,6 +49,8 @@ export async function PATCHHandler(
 
     const formData = await request.formData();
 
+    const file = formData.get("gambar") as File | null;
+
     const body = {
       nominal: formData.get("nominal"),
       deskripsi: formData.get("deskripsi"),
@@ -59,10 +62,31 @@ export async function PATCHHandler(
       return errorHelper(error);
     }
 
+    const fileName = `${Date.now()}-${file?.name}`;
+    const imageUrl = `${process.env.SUPABASE_NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/uploads/${fileName}`;
+
+    let storage = null;
+
+    if (file) {
+      storage = await supabase.storage
+        .from("uploads") // nama bucket
+        .upload(fileName, file, {
+          contentType: file.type,
+        });
+    }
+
+    if (storage?.error) {
+      console.error("Upload error", storage.error);
+      return errorHelper(error);
+    }
+
     const donasi = new DonasiRequest();
     donasi.id_user = user.id;
     donasi.nominal = value.nominal;
     donasi.deskripsi = value.deskripsi;
+    if (storage?.data) {
+      donasi.gambar = imageUrl;
+    }
 
     const data = await serviceDonasi.editDonasi(id, donasi);
 
