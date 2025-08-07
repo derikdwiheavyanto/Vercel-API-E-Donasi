@@ -5,8 +5,6 @@ import AppResponse from "@/lib/helper/app_response";
 import { errorHelper } from "@/lib/helper/error_helper";
 import { verifyToken } from "@/lib/helper/verify_token";
 import { NextRequest, NextResponse } from "next/server";
-import path from "path";
-import fs from "fs";
 import { supabase } from "@/lib/supabase";
 
 export async function GETHandler(request: NextRequest) {

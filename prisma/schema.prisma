@@ -37,6 +37,7 @@ model Donasi {
   tanggal_donasi DateTime
   nominal        Int      @db.Integer
   deskripsi      String   @db.VarChar(255)
+  gambar         String?
   created_at     DateTime @default(now())
   updated_at     DateTime @default(now()) @updatedAt
   id_user        String
