@@ -73,3 +73,26 @@ export async function PATCHHandler(
     return errorHelper(error);
   }
 }
+
+export async function GETHandler(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    verifyToken(request);
+
+    const { id } = await params;
+
+    if (!id) {
+      throw new AppError("id not found", 404);
+    }
+
+    const data = await serviceDonasi.findDonasiById(id);
+
+    return NextResponse.json(AppResponse.success("get donasi success", data), {
+      status: 200,
+    });
+  } catch (error) {
+    return errorHelper(error);
+  }
+}

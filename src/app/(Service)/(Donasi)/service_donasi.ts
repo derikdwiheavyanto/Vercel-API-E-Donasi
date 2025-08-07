@@ -41,11 +41,17 @@ const deleteDonasi = async (id_donasi: string, id_user: string) => {
   return await repositoryDonasi.deleteDonasi(id_donasi);
 };
 
+const findDonasiById = async (id: string) => {
+  const donasi = await repositoryDonasi.findDonasiById(id);
+  return donasi;
+};
+
 const serviceDonasi = {
   getAllDonasiByUser,
   createDonasi,
   editDonasi,
   deleteDonasi,
+  findDonasiById,
 };
 
 export default serviceDonasi;

@@ -28,60 +28,60 @@ export async function GETHandler(request: NextRequest) {
   }
 }
 
-export async function POSTHandler(request: NextRequest) {
-  try {
-    const user = verifyToken(request);
+  export async function POSTHandler(request: NextRequest) {
+    try {
+      const user = verifyToken(request);
 
-    const formData = await request.formData();
+      const formData = await request.formData();
 
-    const nominal = formData.get("nominal");
-    const deskripsi = formData.get("deskripsi");
-    const file = formData.get("gambar") as File | null;
+      const nominal = formData.get("nominal");
+      const deskripsi = formData.get("deskripsi");
+      const file = formData.get("gambar") as File | null;
 
-    if (!file) {
-      return NextResponse.json(AppResponse.error("gambar is required", 400), {
-        status: 400,
-      });
-    }
+      if (!file) {
+        return NextResponse.json(AppResponse.error("gambar is required", 400), {
+          status: 400,
+        });
+      }
 
-    const body = {
-      nominal,
-      deskripsi,
-    };
+      const body = {
+        nominal,
+        deskripsi,
+      };
 
-    const { error, value } = createDonasiValidation.validate(body);
-    if (error) return errorHelper(error);
+      const { error, value } = createDonasiValidation.validate(body);
+      if (error) return errorHelper(error);
 
-    const fileName = `${Date.now()}-${file?.name}`;
+      const fileName = `${Date.now()}-${file?.name}`;
 
-    const { data: uploadData, error: uploadError } = await supabase.storage
-      .from("uploads") // nama bucket
-      .upload(fileName, file, {
-        contentType: file.type,
-      });
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from("uploads") // nama bucket
+        .upload(fileName, file, {
+          contentType: file.type,
+        });
 
-    if (uploadError) {
-      console.error("Upload error", uploadError);
+      if (uploadError) {
+        console.error("Upload error", uploadError);
+        return errorHelper(error);
+      }
+
+      const imageUrl = `${process.env.SUPABASE_NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/uploads/${fileName}`;
+
+      const donasi = new DonasiRequest();
+      donasi.id_user = user.id;
+      donasi.nominal = value.nominal;
+      donasi.deskripsi = value.deskripsi;
+      if (fileName) {
+        donasi.gambar = imageUrl;
+      }
+
+      const data = await serviceDonasi.createDonasi(donasi);
+
+      return NextResponse.json(
+        AppResponse.success("create donasi success", data),
+        { status: 200 }
+      );
+    } catch (error) {
       return errorHelper(error);
     }
-
-    const imageUrl = `${process.env.SUPABASE_NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/uploads/${fileName}`;
-
-    const donasi = new DonasiRequest();
-    donasi.id_user = user.id;
-    donasi.nominal = value.nominal;
-    donasi.deskripsi = value.deskripsi;
-    if (fileName) {
-      donasi.gambar = imageUrl;
-    }
-
-    const data = await serviceDonasi.createDonasi(donasi);
-
-    return NextResponse.json(
-      AppResponse.success("create donasi success", data),
-      { status: 200 }
-    );
-  } catch (error) {
-    return errorHelper(error);
   }
-}
