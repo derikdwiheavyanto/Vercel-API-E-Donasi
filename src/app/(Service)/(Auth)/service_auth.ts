@@ -17,7 +17,7 @@ const loginService = async (username: string, password: string) => {
   }
 
   if (!user.active) {
-    throw new AppError("User not active", 401);
+    throw new AppError("User belum diaktifkan, mohon hubungi admin", 401);
   }
 
   const isPasswordValid = await bcrypt.compare(password, user.password);
